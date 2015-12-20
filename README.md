@@ -1,3 +1,6 @@
+#Forked from [Miško Hevery's repo ng2-svg](https://github.com/mhevery/ng2-svg)
+
+
 # Simple Angular 2 app written in TypeScript
 
 ## Use latest TypeScript compiler
