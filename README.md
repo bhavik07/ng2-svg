@@ -20,10 +20,6 @@ We have good experience using these editors:
 * [Sublime Text](http://www.sublimetext.com/3) with [Typescript-Sublime-Plugin](https://github.com/Microsoft/Typescript-Sublime-plugin#installation)
 
 ## Load the app
-If you want to get up and running immediately, copy the completed sources:
-
-    $ cp complete/* .
-
 From the directory that contains index.html:
 
     $ npm install -g http-server  # Or sudo npm install -g http-server
