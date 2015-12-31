@@ -3,16 +3,13 @@
 
 # Simple Angular 2 app written in TypeScript
 
+## Get the Angular2 dependencies
+	$ npm install
+
 ## Use latest TypeScript compiler
-TypeScript 1.5 beta includes everything you need. Make sure to upgrade, even if you installed TypeScript previously.
+Make sure to upgrade, even if you installed TypeScript previously.
 
-    $ npm install -g typescript@^1.5.0-beta
-
-## Start up the compiler
-
-    $ cd ts-quickstart
-    $ tsc -w
-    message TS6042: Compilation complete. Watching for file changes.
+    $ npm install -g typescript
 
 ## Use a TypeScript-aware editor
 We have good experience using these editors:

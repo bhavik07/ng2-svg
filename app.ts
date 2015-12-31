@@ -1,33 +1,25 @@
-/// <reference path="typings/angular2/angular2.d.ts" />
-import {
-    Parent,
-    Directive,
-    Component,
-    NgFor,
-    Query, QueryList,
-    View, ViewRef, ViewContainerRef, ProtoViewRef,
-    bootstrap, forwardRef, ElementRef,
-    onAllChangesDone} from 'angular2/angular2';
+/// <reference path="node_modules/angular2/core.d.ts" />
+/// <reference path="node_modules/angular2/platform/browser.d.ts" />
+/// <reference path="node_modules/angular2/common.d.ts" />
 
+import { Directive, Component, Query, QueryList, View, ViewContainerRef, forwardRef, TemplateRef } from 'angular2/core';
+import { bootstrap } from 'angular2/platform/browser';
+import { NgFor } from 'angular2/common';
 
-
+//having some issue using selector as `view-dst`
 @Directive({
-  selector: '[view-dst]',
-  properties: { 'viewDst': 'viewDst' }
+  selector: '[viewdst]',
+  inputs: ['viewdst']
 })
 class ViewDst {
   constructor(public viewContainer: ViewContainerRef) {
     console.log('ViewDst');
   }
 
-  set viewDst(templateRef:SrcAxisTemplate) {
-    console.log("ViewDst.templateRef", templateRef);
-    var viewRef:ViewRef = this.viewContainer.create(templateRef.protoView, -1, templateRef.elementRef);
-    // TODO: set locals
+  set viewdst(templateRef: TemplateRef) {
+    this.viewContainer.createEmbeddedView(templateRef);
   }
 }
-
-
 
 
 @Component({
@@ -35,31 +27,27 @@ class ViewDst {
 })
 @View({
   directives: [forwardRef(() => SrcAxisTemplate)],
-  template: `
-  <svg>
-    <rect *src-axis-template="var width=width; var y=y;"
-          width="100%" height="5" x="0" y="0"
-          style="fill:rgb(255,0,9);stroke-width:3;stroke:rgb(0,0,0)" />
-  </svg>`
+  template: `<svg><rect *src-axis-template="var width=width; var y=y;"
+          width="100%" height="5" x="0" y="10"
+          style="fill:rgb(255,0,9);stroke-width:3;stroke:rgb(0,0,0)"></rect></svg>`
 })
 class Axis {
-  templateRef: SrcAxisTemplate;
+  templateRef: TemplateRef;
   constructor() {
     console.log('Axis');
   }
 
   addTemplate(srcAxisTemplate: SrcAxisTemplate) {
-    this.templateRef = srcAxisTemplate;
+    this.templateRef = srcAxisTemplate.templateRef;
   }
 }
-
 
 
 @Directive({
   selector: '[src-axis-template]'
 })
 class SrcAxisTemplate {
-  constructor(axis: Axis, public protoView: ProtoViewRef, public elementRef: ElementRef) {
+  constructor(axis: Axis, public templateRef: TemplateRef) {
     console.log('SrcAxisTemplate');
     axis.addTemplate(this);
   }
@@ -68,19 +56,17 @@ class SrcAxisTemplate {
 
 @Component({
   selector: 'graph',
-  properties: {
-    width: 'width',
-    height: 'height'
-  }
-})
-@View({
+  properties: [
+    'width: width',
+    'height: height'
+  ],
   template: `
   <svg width="100%" height="100%">
     <rect [attr.width]="width" [attr.height]="height"
-          style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" />
+          style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)"></rect>
     <svg [attr.width]="width" height="10" x="0" [attr.y]="1*height + 5">
-      <g *ng-for="var axis of axes; var i=$index" [attr.y]="i*10">
-        <template [view-dst]="axis.templateRef"></template>
+      <g *ngFor="#axis of axes; #i=index" [attr.y]="i*10">
+        <template [viewdst]="axis.templateRef"></template>
       </g>
     </svg>
   </svg>
@@ -91,15 +77,13 @@ class SrcAxisTemplate {
 class Graph {
   width: number;
   height: number;
-  axes: QueryList;
+  axes: QueryList<Axis>;
 
-  constructor(@Query(Axis) axes: QueryList) {
+  constructor( @Query(Axis) axes: QueryList<Axis>) {
     console.log('Graph');
     this.axes = axes;
   }
 }
-
-
 
 
 // Annotation section
@@ -121,6 +105,4 @@ class MyAppComponent {
 }
 
 //console.log(ViewContainerRef);
-
 bootstrap(MyAppComponent);
-
